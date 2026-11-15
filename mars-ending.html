@@ -42,7 +42,12 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
           mask-image:radial-gradient(ellipse 9% 16% at 78.1% 42.8%,#000 62%,transparent 100%)}
 .redpulse{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(255,40,20,.22),transparent 60%);animation:pulse 4.2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
-#fitEarth{transform-origin:54% 64%}
+#fitEarth{transform-origin:54% 64%;z-index:0}
+#Learth.memory::before{content:"";position:absolute;inset:0;z-index:1;background:
+  linear-gradient(90deg,rgba(3,4,9,.72),rgba(3,4,9,.2) 58%,rgba(3,4,9,.38)),
+  url("./assets/lunar-outpost-beneath-earthlight.png") center/cover no-repeat;
+  opacity:1;transition:opacity 1.2s ease}
+#Learth.memory .fit{opacity:0}
 .sunrise{position:absolute;inset:0;opacity:0;transition:opacity 5s ease;
   background:radial-gradient(ellipse 55% 45% at 84% 38%,rgba(255,214,150,.75),rgba(255,160,90,.25) 45%,transparent 70%);mix-blend-mode:screen}
 .sunrise.on{opacity:1}
@@ -551,6 +556,13 @@ async function scene22(){
   clearDlg();earthCam(1,0);$('#sunrise').classList.remove('on');SFX.mode('b',.35);await waitMs(300);
   layers(['Learth']);black(0,2200);await waitMs(2400);
   await say('NARRATOR','The journey had begun with a mysterious signal. It ended with something far more important: a reminder of what humanity had achieved.',()=>earthCam(1.6,12000));
+  $('#Learth').classList.add('memory');
+  await say('NARRATOR','The signal was never meant to lead us to its source.');
+  await say('NARRATOR','It led us back to ourselves.');
+  await say('NARRATOR','To the machines, records, and footprints our ancestors left beyond Earth.');
+  await say('NARRATOR','This is our history, and proof that humanity reached into outer space.');
+  await say('NARRATOR','Carry it forward, so the next generation remembers how far we once dared to go—and how much farther they can go.');
+  $('#Learth').classList.remove('memory');
   await say('CONTROL','Welcome home. Your mission is complete.',()=>{earthCam(2.8,11000);$('#sunrise').classList.add('on');SFX.inten(.55)});
 }
 
@@ -608,7 +620,7 @@ function buildPoster(){
 function resetAll(){
   cancelAll();S.typing=false;S.cine=false;S.stopAt=99;motesOn=false;
   $('#poster').classList.remove('on','go');$('#hud').style.display='';$('#hud').classList.remove('cine');
-  $('#bloom').classList.remove('on');$('#sunrise').classList.remove('on');showPlaque(null);$('#plaques').innerHTML='';curPlaque=null;
+  $('#bloom').classList.remove('on');$('#sunrise').classList.remove('on');$('#Learth').classList.remove('memory');showPlaque(null);$('#plaques').innerHTML='';curPlaque=null;
   clearDlg();layers([]);vid.pause();black(1,0);vwrap.style.opacity=1;cam(vwrap,1,0);
 }
 async function play(){
