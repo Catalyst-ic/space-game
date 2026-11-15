@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lunar Survey — Tilted View</title>
+<title>Lunar Survey</title>
 <style>
 :root{color-scheme:dark;--tx:#eef1f4;--dim:rgba(238,241,244,.6);--ac:#c9b08f}
 html,body{margin:0;height:100%;background:#07090c;overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--tx);-webkit-user-select:none;user-select:none}
@@ -35,9 +35,11 @@ button.act{color:var(--tx);border-bottom-color:var(--ac)}
 
 <div id="load" style="position:fixed;left:0;right:0;top:45%;text-align:center;display:none;font-size:12px;letter-spacing:.3em;color:rgba(238,241,244,.7);pointer-events:none">GENERATING LUNAR SURFACE…</div>
 <button id="atBtn">LUNAR ATLAS</button>
-<div id="atlas"><button id="atx" aria-label="Close">&#10005;</button><div id="atH"><div id="atT">SELENOGRAPHIC CHART &middot; NEAR SIDE</div><h2>Lunar <i>Atlas</i></h2><div id="atS">TAP A CRATER OR LANDING SITE FOR DETAILS</div><div id="atTabs"><button data-v="g" class="act">GLOBE</button><button data-v="l">LOCAL SURVEY</button></div></div><canvas id="atc" width="1400" height="1400"></canvas><canvas id="atl" width="1300" height="1300" style="display:none"></canvas><div id="atLg"><span><b class="lgC"></b>CRATER</span><span><b class="lgS"></b>LANDING SITE</span><span><b class="lgM">Mare</b>SEA</span><span><b class="lgY"></b>YOU</span></div><div id="atChips"></div><div id="atinfo"></div></div></div>
-<div id="card"><small id="cs"></small><h3 id="ct"></h3><p id="cf"></p><button id="dosBtn" class="dbtn" style="display:none">VIEW FILES</button></div>
-<div id="help">The surface is dark. Your headlamp shows what is close.<br><span style="color:#8fb0c4">WASD / arrows · Shift run · Space hop · touch &amp; drag to move<br>Follow the orange signals to find real NASA hardware.</span></div>
+<button id="map-hint" type="button">TAP TO VIEW MAP</button>
+<div id="atlas"><button id="atx" aria-label="Close">&#10005;</button><div id="atH"><div id="atT">SELENOGRAPHIC CHART &middot; NEAR SIDE</div><h2>Lunar <i>Atlas</i></h2><div id="atS">TAP A CRATER OR LANDING SITE FOR DETAILS</div><div id="atTabs"><button data-v="g" class="act">GLOBE</button><button data-v="l">LOCAL SURVEY</button></div><div id="atlas-hint">TAP LOCAL SURVEY</div></div><canvas id="atc" width="1400" height="1400"></canvas><canvas id="atl" width="1300" height="1300" style="display:none"></canvas><div id="atLg"><span><b class="lgC"></b>CRATER</span><span><b class="lgS"></b>LANDING SITE</span><span><b class="lgM">Mare</b>SEA</span><span><b class="lgY"></b>YOU</span></div><div id="atChips"></div><div id="atinfo"></div></div></div>
+<div id="card"><small id="cs"></small><h3 id="ct"></h3><p id="cf"></p><div id="narration-hint">CLICK OR TAP TO ADVANCE</div><button id="dosBtn" class="dbtn" style="display:none">VIEW FILES</button></div>
+<div id="help">The surface is dark. Your headlamp shows what is close.<br><span style="color:#8fb0c4">WASD / arrows · Shift run · Space hop · touch &amp; drag to move<br>Click or tap the narration to advance.</span></div>
+<div id="touch-controls" aria-label="Touch controls"><button id="touch-run" type="button" aria-pressed="false">RUN</button><button id="touch-jump" type="button">JUMP</button></div>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@500;600&family=Special+Elite&family=Bebas+Neue&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 .dbtn{pointer-events:auto;font:inherit;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#e4dfd3;background:rgba(166,160,143,.12);border:1px solid #a6a08f;padding:9px 14px;margin-top:14px;cursor:pointer}
@@ -56,8 +58,8 @@ button.act{color:var(--tx);border-bottom-color:var(--ac)}
 #dlbx{position:absolute;left:0;top:0;width:1920px;height:1080px;background:rgba(3,5,8,.95);display:none;z-index:30;flex-direction:column;align-items:center;justify-content:center}
 #dlbx.on{display:flex}
 /* ===== narration panel (replaces the discovery card) ===== */
-#card{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;box-sizing:border-box;padding:24px 60px 34px;background:linear-gradient(transparent,rgba(0,0,0,.92) 40%);color:#e6e6e6;min-height:170px;border:0;box-shadow:none;transform:translateY(8px);z-index:40;display:block;visibility:hidden;opacity:0;pointer-events:none;cursor:pointer;font-family:'Special Elite',Courier,monospace;transition:opacity 1.4s ease,transform 1.4s ease,visibility 0s linear 1.4s}
-#card.on{transform:none;visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
+#card{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;box-sizing:border-box;padding:24px 60px 34px;background:linear-gradient(transparent,rgba(0,0,0,.92) 40%);color:#e6e6e6;min-height:170px;border:0;box-shadow:none;transform:none;z-index:40;display:block;visibility:hidden;opacity:0;pointer-events:none;cursor:pointer;font-family:'Special Elite',Courier,monospace;transition:opacity 1.4s ease,visibility 0s linear 1.4s}
+#card.on{visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
 #card>*{max-width:none;margin-left:0!important;margin-right:0!important}
 #cs{display:block;font:400 22px/1 'Special Elite','Courier New',monospace;letter-spacing:normal;text-transform:none;color:#fff;padding-bottom:6px;border-bottom:1px solid #9a9a9a;width:100%;margin-bottom:0}
 #ct{display:none}
@@ -76,6 +78,8 @@ body.atlasOn .autoplay-control{display:none!important}
 #card.hardware-card #cs,#card.hardware-card #cf{display:none}
 #card.hardware-card #cn,#card.hardware-card #cb{display:none}
 #cn{position:absolute;right:clamp(20px,3vw,40px);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);max-width:none!important;margin:0!important;font:400 16px/1 sans-serif;color:#f3efe6;opacity:.7;cursor:pointer;pointer-events:auto;animation:cnb 1.2s ease-in-out infinite}
+#narration-hint{position:absolute;right:30px;top:-28px;padding:5px 9px;border:1px solid rgba(201,185,145,.35);border-radius:4px;background:rgba(13,14,24,.78);color:#c7c1b6;font:12px 'Fredoka',sans-serif;letter-spacing:.04em;opacity:.9;pointer-events:none}
+#card.hardware-card #narration-hint{display:none}
 @keyframes cnb{50%{transform:translateY(4px);opacity:1}}
 body.narr #atBtn,body.narr #rst{opacity:0;pointer-events:none}
 .autoplay-control{position:fixed;right:20px;top:18px;z-index:70;display:flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid rgba(201,185,145,.35);border-radius:999px;background:rgba(13,14,24,.76);color:#c7c1b6;font-family:'Fredoka',system-ui,sans-serif;font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer;user-select:none;backdrop-filter:blur(6px)}
@@ -89,8 +93,8 @@ body.narr #atBtn,body.narr #rst{opacity:0;pointer-events:none}
 #chapter2{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(rgba(18,8,7,.35),rgba(18,8,7,.88)),url('./assets/mars-landing.jpg') center/cover;color:#f3efe6;opacity:0;transition:opacity 1.4s ease}
 #chapter2::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,transparent 0 18%,rgba(0,0,0,.4) 70%),repeating-linear-gradient(115deg,rgba(255,255,255,.025) 0 2px,transparent 2px 90px);pointer-events:none}
 #chapter2.on{opacity:1}
-#chapter2-copy{position:relative;width:min(920px,calc(100% - 48px));text-align:center;opacity:0;transform:translateY(22px);transition:opacity 1.2s ease 1.4s,transform 1.2s ease 1.4s}
-#chapter2.on #chapter2-copy{opacity:1;transform:none}
+#chapter2-copy{position:relative;width:min(920px,calc(100% - 48px));text-align:center;opacity:0;transform:none;transition:opacity 1.2s ease 1.4s}
+#chapter2.on #chapter2-copy{opacity:1}
 #chapter2-kicker{font:600 23px 'Fredoka',system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#d4a36f;text-shadow:0 2px 0 #33201e}
 #chapter2-title{margin:8px 0 20px;font:700 clamp(64px,10vw,124px)/.86 'Fredoka',system-ui,sans-serif;letter-spacing:-.035em;text-transform:uppercase;color:#e0d5c7;-webkit-text-stroke:2px #241313;text-shadow:0 5px 0 #633326,0 11px 0 #160b0b}
 #chapter2-copy p{max-width:620px;margin:0 auto 30px;font:20px/1.45 'Special Elite','Courier New',monospace;color:#d4c6bc;text-shadow:0 2px 5px #090606}
@@ -250,6 +254,13 @@ body.narr #atBtn,body.narr #rst{opacity:0;pointer-events:none}
 #atTabs button.act{background:#c9b08f;color:#14110c;border-color:#c9b08f;font-weight:700}
 #atChips button.me{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);color:#fff}
 #atChips button.me.act,#atChips button.me:hover{background:rgba(255,255,255,.3)}
+#map-hint{position:fixed;right:14px;top:calc(env(safe-area-inset-top,0px) + 250px);z-index:16;padding:5px 9px;border:1px solid rgba(201,185,145,.35);border-radius:4px;background:rgba(13,14,24,.78);color:#c7c1b6;font:11px 'Fredoka',sans-serif;letter-spacing:.04em;cursor:pointer}
+#map-hint.hidden{display:none}
+body.atlasOn #map-hint{display:none}
+#atlas-hint{margin-top:9px;padding:5px 9px;border:1px solid rgba(255,138,92,.5);border-radius:4px;background:rgba(70,24,8,.7);color:#ffc3a4;font:11px 'Fredoka',sans-serif;letter-spacing:.08em}
+#atlas-hint.hidden{display:none}
+#atTabs button.guide{box-shadow:0 0 0 2px rgba(255,138,92,.5),0 0 18px rgba(255,138,92,.35);animation:tabGuide 1.2s ease-in-out infinite}
+@keyframes tabGuide{50%{filter:brightness(1.35)}}
 @media (max-width:820px){
 #site{font-size:9px}#coord{font-size:14px;gap:4px 12px}#coord small{font-size:8px;margin-right:4px}.meta{gap:10px;font-size:9px}
 #rst{font-size:9px}#jump{width:56px!important;height:56px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 56px)!important}
@@ -429,6 +440,7 @@ const P=(function(){const pts=ANCH.map(a=>[a[0],a[1],420]).concat(objs.map(o=>[o
  for(let i=0;i<600;i++){const x=220+Math.random()*(W-440),y=220+Math.random()*(W-440);let m=1e9;for(const p of pts)m=Math.min(m,Math.hypot(p[0]-x,p[1]-y)-p[2]);if(m>bs){bs=m;best={x,y}}if(m>=0)break}
  return{x:best.x,y:best.y,a:Math.random()*6.283}})();
 let ready=false,fog,fc,SV=[],camX=P.x,camY=P.y,zoomBoost=0,shake=0,flash=0,hopH=0,hopV=0,stepAcc=0,stepSide=1,prints=[],dust=[],jumpReq=0,stick=null,lastC='',lastSite=-1,cardT=0,nearO=null,nearD=1e9,w,h,dpr;
+const FOG_SIZE=900,FOG_SCALE=FOG_SIZE/W;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 SV=[];/* story mode: discoveries are not restored, so narration always replays from the start in order */
 
@@ -437,7 +449,7 @@ function fmt(a,p,n){return Math.abs(a).toFixed(5)+'° '+(a>=0?p:n)}
 function setSig(v){[...sigEl.children].forEach((b,k)=>b.className=v>k/5+.02?'on':'')}
 function ui(){document.getElementById('cnt').textContent=objs.filter(o=>o.found).length+'/'+objs.length;dots.innerHTML='';objs.forEach(o=>{const i=document.createElement('i');i.className=o.found?'on':'';dots.appendChild(i)})}
 function save(){try{SV=objs.map((o,i)=>o.found?i:-1).filter(i=>i>=0);localStorage.setItem('moon4',JSON.stringify(SV))}catch(e){}}
-function clearFog(x,y,r){fc.save();fc.globalCompositeOperation="destination-out";const g=fc.createRadialGradient(x,y,r*.35,x,y,r);g.addColorStop(0,"#000");g.addColorStop(1,"rgba(0,0,0,0)");fc.fillStyle=g;fc.beginPath();fc.arc(x,y,r,0,7);fc.fill();fc.restore()}
+function clearFog(x,y,r){x*=FOG_SCALE;y*=FOG_SCALE;r*=FOG_SCALE;fc.save();fc.globalCompositeOperation="destination-out";const g=fc.createRadialGradient(x,y,r*.35,x,y,r);g.addColorStop(0,"#000");g.addColorStop(1,"rgba(0,0,0,0)");fc.fillStyle=g;fc.beginPath();fc.arc(x,y,r,0,7);fc.fill();fc.restore()}
 function found(o){o.found=1;if(glFogTex)glFogTex.needsUpdate=true;o.t2=0;clearFog(o.x,o.y,170);ui();save();showCard(o);maybeStartFinale();zoomBoost=1;flash=.6;shake=.6}
 function burst(x,y,n){for(let i=0;i<n;i++){const a=Math.random()*6.28,s=20+Math.random()*40;dust.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s*.6,l:1})}}
 let grainPat=null;
@@ -563,8 +575,9 @@ const atDirN=['N','NE','E','SE','S','SW','W','NW'];
 function atRel(dx,dy){const m=Math.hypot(dx,dy)*.5,ang=(Math.atan2(dx,-dy)*180/Math.PI+360)%360,d=atDirN[Math.round(ang/45)%8];return(m>=1000?(m/1000).toFixed(2)+' km':Math.round(m)+' m')+' '+d}
 function atNear(x,y){let b=-1,bd=1e9;ANCH.forEach((a,i)=>{if(!siteFound(i))return;const d=Math.hypot(a[0]-x,a[1]-y);if(d<bd){bd=d;b=i}});return b}
 function atYou(){const l=ll(P.x,P.y),b=atNear(P.x,P.y);let txt='Uncharted ground · no discovered site nearby';if(b>=0){const a=ANCH[b],t=SITES[b].name.split(' · ');txt='You are '+atRel(P.x-a[0],P.y-a[1])+' of '+t[0]+' · '+t[1]}return{lat:l[0],lon:l[1],b,ll:atLL(l[0],l[1]),txt}}
-let atView='g',atLegG=null;
+let atView='g',atLegG=null,localSurveyHintSeen=false;
 function atSetView(v){atView=v;document.getElementById('atc').style.display=v==='g'?'':'none';document.getElementById('atl').style.display=v==='l'?'block':'none';
+ const localButton=document.querySelector('#atTabs button[data-v="l"]');if(v==='l'){localSurveyHintSeen=true;document.getElementById('atlas-hint').classList.add('hidden');localButton.classList.remove('guide')}else if(!localSurveyHintSeen){document.getElementById('atlas-hint').classList.remove('hidden');localButton.classList.add('guide')}
  [...document.querySelectorAll('#atTabs button')].forEach(b=>b.classList.toggle('act',b.dataset.v===v));
  const lg=document.getElementById('atLg');if(!atLegG)atLegG=lg.innerHTML;
  lg.innerHTML=v==='g'?atLegG:'<span><b class="lgS"></b>LANDING SITE</span><span><b class="lgC" style="background:#fff"></b>FOUND HARDWARE</span><span><b class="lgY"></b>YOU</span><span>GRID: 100 m</span>';
@@ -618,11 +631,11 @@ function atLocal(){const cv2=document.getElementById('atl'),x=cv2.getContext('2d
  atPts.push({n:'YOU',x:ux,y:uy,kind:'YOUR POSITION',info:u.txt,sub:u.ll})}
 function atDraw(){if(atView==='l')atLocal();else atGlobe()}
 function atShow(p){atSel=p;document.getElementById('atinfo').innerHTML='<em>'+p.kind+'</em><b>'+p.n+'</b>'+p.info+(p.sub?'<small>'+p.sub+'</small>':'');[...document.querySelectorAll('#atChips button')].forEach(b=>b.classList.toggle('act',b.dataset.n===p.n));atDraw()}
-function atOpen(){document.getElementById('atlas').classList.add('on');document.body.classList.add('atlasOn');atSel=null;atBuildChips();atSetView(atView);if(!atLoop)atLoop=setInterval(atDraw,60)}
+function atOpen(){document.getElementById('map-hint').classList.add('hidden');document.getElementById('atlas').classList.add('on');document.body.classList.add('atlasOn');atSel=null;atBuildChips();atSetView(atView);if(!atLoop)atLoop=setInterval(atDraw,60)}
 let atLoop=null;
 function atBuildChips(){const el=document.getElementById('atChips');el.innerHTML='';{const me=document.createElement('button');me.textContent='MY POSITION';me.className='me';me.dataset.n='YOU';me.onclick=()=>{atDraw();const p=atPts.find(p=>p.n==='YOU');if(p)atShow(p)};el.appendChild(me)}SITES.forEach((t,i)=>{if(!siteFound(i))return;const n=t.name.split(' · ')[0],b=document.createElement('button');b.textContent=n.toUpperCase();b.dataset.n=n;b.onclick=()=>{atDraw();const p=atPts.find(p=>p.n===n);if(p)atShow(p)};el.appendChild(b)})}
 function atClose(){document.getElementById('atlas').classList.remove('on');document.body.classList.remove('atlasOn');clearInterval(atLoop);atLoop=null}
-document.getElementById('atBtn').onclick=atOpen;document.getElementById('atx').onclick=atClose;[...document.querySelectorAll('#atTabs button')].forEach(b=>b.onclick=()=>atSetView(b.dataset.v));
+document.getElementById('atBtn').onclick=atOpen;document.getElementById('map-hint').onclick=atOpen;document.getElementById('atx').onclick=atClose;[...document.querySelectorAll('#atTabs button')].forEach(b=>b.onclick=()=>atSetView(b.dataset.v));
 document.getElementById('atc').onclick=e=>{const cv2=e.currentTarget,r=cv2.getBoundingClientRect(),px=(e.clientX-r.left)*cv2.width/r.width,py=(e.clientY-r.top)*cv2.height/r.height;let b=null,bd=34*(cv2.width/r.width);for(const p of atPts){const d=Math.hypot(p.x-px,p.y-py);if(d<bd){bd=d;b=p}}if(b)atShow(b)};
 document.getElementById('atl').onclick=document.getElementById('atc').onclick;
 addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('atlas').classList.contains('on'))atClose()});
@@ -632,17 +645,19 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('atl
  document.addEventListener('pointerdown',e=>{if(ready&&inMM(e.clientX,e.clientY)){e.preventDefault();e.stopPropagation();atOpen()}},true);
  document.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')cv.style.cursor=(ready&&inMM(e.clientX,e.clientY))?'pointer':''});
 })();
-function startGame(){document.getElementById('load').style.display='block';setTimeout(()=>{genTerrain(11);fog=mk(W,W);fc=fog.getContext('2d');fc.fillStyle='rgba(3,4,6,.95)';fc.fillRect(0,0,W,W);
+function startGame(){document.getElementById('load').style.display='block';setTimeout(()=>{genTerrain(11);fog=mk(FOG_SIZE,FOG_SIZE);fc=fog.getContext('2d');fc.fillStyle='rgba(3,4,6,.95)';fc.fillRect(0,0,FOG_SIZE,FOG_SIZE);
 objs.forEach((o,i)=>{if(SV.includes(i)){o.found=1;o.t2=2;clearFog(o.x,o.y,170)}});clearFog(P.x,P.y,150);ui();document.getElementById('load').style.display='none';mmap=mk(256,256);mmap.getContext("2d").drawImage(terr,0,0,256,256);grainPat=makeGrain();initGL();ready=true;const help=document.getElementById('help');help.classList.add('ready');setTimeout(()=>help.classList.remove('ready'),7000)},40)}
 
 /* ---------- input ---------- */
-const K={};
+const K={};let touchRun=false;
 function hideHelp(){document.getElementById('help').classList.remove('ready')}
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();K[k]=1;if(k===' '){e.preventDefault();jumpReq=1}hideHelp()});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();K[k]=1;if(k===' '){e.preventDefault();if(seq&&!document.body.classList.contains('dosOn')&&!document.body.classList.contains('atlasOn'))advance();else jumpReq=1}hideHelp()});
 addEventListener('keyup',e=>K[e.key.toLowerCase()]=0);
 cv.addEventListener('touchstart',e=>{const t=e.touches[0];stick={sx:t.clientX,sy:t.clientY,dx:0,dy:0};hideHelp();e.preventDefault()},{passive:false});
 cv.addEventListener('touchmove',e=>{const t=e.touches[0];if(stick){stick.dx=clamp((t.clientX-stick.sx)/55,-1,1);stick.dy=clamp((t.clientY-stick.sy)/55,-1,1)}e.preventDefault()},{passive:false});
 cv.addEventListener('touchend',()=>stick=null);
+document.getElementById('touch-jump').addEventListener('pointerdown',e=>{e.preventDefault();jumpReq=1;hideHelp()});
+document.getElementById('touch-run').addEventListener('pointerdown',e=>{e.preventDefault();touchRun=!touchRun;e.currentTarget.setAttribute('aria-pressed',String(touchRun));hideHelp()});
 document.getElementById('rst').onclick=()=>{try{localStorage.removeItem('moon4')}catch(e){}location.reload()};
 function size(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;cv.width=w*dpr;cv.height=h*dpr;if(glR){glR.setPixelRatio(dpr);glR.setSize(w,h,false)}}
 addEventListener('resize',size);size();
@@ -652,7 +667,7 @@ function update(dt){
  let vx=(K.d||K.arrowright?1:0)-(K.a||K.arrowleft?1:0),vy=(K.s||K.arrowdown?1:0)-(K.w||K.arrowup?1:0);
  if(stick){vx=stick.dx;vy=stick.dy}
  const m=Math.hypot(vx,vy);
- if(m>.08){const k=Math.min(1,m),sp=(K.shift?170:105)*k;vx/=m;vy/=m;P.x+=vx*sp*dt;P.y+=vy*sp*dt;ph+=dt*9*k;sw=k;
+ if(m>.08){const k=Math.min(1,m),sp=((K.shift||touchRun)?170:105)*k;vx/=m;vy/=m;P.x+=vx*sp*dt;P.y+=vy*sp*dt;ph+=dt*9*k;sw=k;
   let d=Math.atan2(vy,vx)-P.a;d=Math.atan2(Math.sin(d),Math.cos(d));P.a+=d*Math.min(1,dt*12);
   stepAcc+=sp*dt;if(stepAcc>15&&hopH===0){stepAcc=0;stepSide=-stepSide;prints.push({x:P.x-vy*stepSide*5,y:P.y+vx*stepSide*5,a:Math.atan2(vy,vx),l:1})}}
  else sw*=Math.max(0,1-dt*8);
@@ -950,10 +965,9 @@ function render(){
   ctx.drawImage(lc,0,0,w,h);
   ctx.save();ctx.globalCompositeOperation='lighter';beam(ctx,.9,.02,'rgba(255,240,210,');beam(ctx,.6,.025,'rgba(255,240,210,');beam(ctx,.3,.03,'rgba(255,240,210,');pool(ctx,1,.3,'rgba(255,240,210,');ctx.restore();
  }
- if(nearO&&!nearO.found){const[tx,ty]=P2(nearO.x,nearO.y),ang=Math.atan2(ty-psy,tx-psx),R=64,onS=tx>40&&tx<w-40&&ty>40&&ty<h-40;
- let ax,ay;
- if(onS){ax=psx+Math.cos(ang)*R;ay=psy+Math.sin(ang)*R;ctx.save();ctx.translate(ax,ay);ctx.rotate(ang);ctx.fillStyle='rgba(225,232,240,'+(.6+.35*pulse)+')';ctx.beginPath();ctx.moveTo(9,0);ctx.lineTo(-5,6);ctx.lineTo(-2,0);ctx.lineTo(-5,-6);ctx.closePath();ctx.fill();ctx.restore()}
- else{ax=clamp(tx,40,w-40);ay=clamp(ty,40,h-40);const an=Math.atan2(ty-h/2,tx-w/2);ctx.save();ctx.translate(ax,ay);ctx.rotate(an);ctx.fillStyle='#c9b08f';ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-6,7);ctx.lineTo(-2,0);ctx.lineTo(-6,-7);ctx.closePath();ctx.fill();ctx.restore()}
+ if(nearO&&!nearO.found){const[tx,ty]=P2(nearO.x,nearO.y),ang=Math.atan2(ty-lampY,tx-psx),R=64,onS=tx>40&&tx<w-40&&ty>40&&ty<h-40;
+ const ax=psx+Math.cos(ang)*R,ay=lampY+Math.sin(ang)*R;
+ ctx.save();ctx.translate(ax,ay);ctx.rotate(ang);ctx.fillStyle=onS?'rgba(225,232,240,'+(.6+.35*pulse)+')':'#c9b08f';ctx.beginPath();ctx.moveTo(onS?9:12,0);ctx.lineTo(onS?-5:-6,onS?6:7);ctx.lineTo(-2,0);ctx.lineTo(onS?-5:-6,onS?-6:-7);ctx.closePath();ctx.fill();ctx.restore();
  ctx.font='600 11px system-ui,sans-serif';ctx.textAlign='center';ctx.fillStyle='rgba(235,240,245,.9)';ctx.fillText(Math.round(nearD*.5)+' M',ax,ay-(onS?14:18));ctx.textAlign='start'}
   if(mmap){const MM=116,mx0=w-14-MM,my0=128,k=MM/W,cx0=mx0+MM/2,cy0=my0+MM/2,R0=MM/2;
   ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -1369,6 +1383,38 @@ startGame();
 #rot{display:none;position:fixed;inset:0;z-index:300;background:#0b0e13;color:#d9dde3;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 20px/1.4 Barlow,system-ui,sans-serif;letter-spacing:.04em}
 #rot b{display:block;font:italic 800 28px "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.08em;color:#a88a5c;margin-bottom:12px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
+#touch-controls{display:none}
+@media (max-width:820px){
+ #touch-controls{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:25;display:flex;gap:10px}
+ #touch-controls button{width:64px;height:52px;border:1px solid rgba(201,176,143,.7);border-radius:12px;background:rgba(7,9,12,.78);color:#f1ece0;font-size:11px;letter-spacing:.14em;touch-action:manipulation}
+ #touch-controls button[aria-pressed="true"]{background:#c9b08f;color:#14110c}
+ #atlas{overflow-y:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 18px)}
+ #atH{flex:none;margin-top:8px}
+ #atH h2{font-size:clamp(28px,8vw,40px)}
+ #atT{font-size:10px;letter-spacing:.2em}
+ #atS{font-size:11px;line-height:1.4}
+ #atTabs{flex-wrap:wrap}
+ #atc,#atl{flex:none;width:min(92vw,520px);height:auto;max-height:none;margin:8px auto 0}
+ #atLg{flex:none;gap:9px 14px;font-size:10px;line-height:1.4}
+ #atChips{flex:none;width:min(92vw,620px);margin-top:10px}
+ #atChips button{font-size:10px;padding:8px 11px}
+ #atinfo{flex:none;width:min(92vw,620px);min-height:0;margin:10px auto 0;padding:12px 14px;font-size:13px}
+ #atinfo b{font-size:22px}
+ #atinfo small{font-size:12px}
+ #atx{right:10px;top:calc(env(safe-area-inset-top,0px) + 8px);width:40px;height:40px}
+ #dos{font-size:16px}
+ #dstage{padding-bottom:40px!important}
+ #dbrand{position:relative;left:auto;top:auto;height:auto;font-size:20px}
+ #dtop{min-height:52px;box-sizing:border-box}
+ #dslots{gap:7px!important}
+ .dsl{width:calc(33.333% - 5px)!important;min-width:0!important;padding:4px 6px!important}
+ #dgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #ddet h3{font-size:20px!important}
+ #dnav{font-size:18px!important}
+ #dlinks{font-size:12px}
+ #dsrc{font-size:13px}
+ body.narr #touch-controls,body.dosOn #touch-controls,body.atlasOn #touch-controls{display:none!important}
+}
 </style>
 <div id="rot" role="status"><div><b>Rotate your device</b>Turn your phone sideways to play in landscape.</div></div>
 </body></html>

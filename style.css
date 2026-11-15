@@ -64,6 +64,10 @@ canvas{position:absolute;left:0;top:0;width:1280px;height:720px}
 #dn:empty{display:none}
 #dlg.on{display:block}
 #dt{display:block;margin-top:12px;font-size:21px;line-height:1.45;min-height:60px;letter-spacing:.02em}
+#dlg-back{position:absolute;right:70px;bottom:12px;border:0;background:transparent;color:#f3efe6;font:400 15px/1 'Bebas Neue',sans-serif;letter-spacing:.14em;opacity:.75;cursor:pointer;visibility:hidden}
+#dlg-back:hover{opacity:1}
+#advance-hint{position:absolute;right:30px;top:-28px;padding:5px 9px;border:1px solid rgba(201,185,145,.35);border-radius:4px;background:rgba(13,14,24,.78);color:#c7c1b6;font:12px 'Fredoka',sans-serif;letter-spacing:.04em;opacity:0;transition:opacity .4s}
+#advance-hint.on{opacity:.9}
 #ch{position:absolute;right:40px;bottom:250px;display:none;flex-direction:column;align-items:flex-end;z-index:21}
 .hud{position:absolute;left:30px;top:24px;background:var(--ink);color:var(--cream);padding:10px 16px;font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;letter-spacing:2px;text-transform:uppercase;z-index:8}
 .hud b{color:var(--mustard);font-weight:400}

@@ -95,7 +95,9 @@ function pollGamepads(){
 pollGamepads();
 
 /* ---------- dialogue ---------- */
-let adv=null,skipT=null,autoPlay=false,autoTimer=null,autoDelay=0;
+let adv=null,skipT=null,autoPlay=false,autoTimer=null,autoDelay=0,advanceHintTimer=null;
+const narrationHistory=[];
+let restoreNarration=null;
 function scheduleAutoAdvance(){
   clearTimeout(autoTimer);autoTimer=null;
   if(autoPlay&&adv)autoTimer=setTimeout(()=>{autoTimer=null;if(autoPlay&&adv)advance()},autoDelay)
@@ -107,8 +109,16 @@ $('#dlg').addEventListener('pointerup',e=>{
   if(e.button===controls.mouse.advance)advance();
 });
 function say(who,text){return new Promise(res=>{$('#dlg').classList.add('on');$('#dn').textContent=who||'';const t=$('#dt');t.textContent='';let i=0,iv=null;
-  const fin=()=>{clearInterval(iv);skipT=null;t.textContent=text;autoDelay=Math.max(2200,Math.min(9000,text.length*52+1200));adv=()=>{adv=null;res()};scheduleAutoAdvance()};
+  narrationHistory.push({who:who||'',text});$('#dlg-back').style.visibility=narrationHistory.length>1?'visible':'hidden';
+  clearTimeout(advanceHintTimer);$('#advance-hint').classList.remove('on');advanceHintTimer=setTimeout(()=>$('#advance-hint').classList.add('on'),4000);
+  let rewound=false;
+  const fin=()=>{clearInterval(iv);skipT=null;t.textContent=text;autoDelay=Math.max(2200,Math.min(9000,text.length*52+1200));adv=()=>{if(rewound){rewound=false;t.textContent=text;scheduleAutoAdvance();return}adv=null;res()};scheduleAutoAdvance()};
+  restoreNarration=()=>{if(narrationHistory.length<2)return;if(skipT)skipT();const previous=narrationHistory[narrationHistory.length-2];$('#dn').textContent=previous.who;$('#dt').textContent=previous.text;rewound=true};
   skipT=fin;iv=setInterval(()=>{i++;t.textContent=text.slice(0,i);if(i>=text.length)fin()},22)})}
+$('#dlg-back').addEventListener('click',e=>{
+  e.stopPropagation();
+  if(restoreNarration)restoreNarration();
+});
 function choose(opts){return new Promise(res=>{const box=$('#ch');box.innerHTML='';box.style.display='flex';
   opts.forEach(o=>{const b=document.createElement('button');b.className='btn alt';b.textContent=o.t;b.onclick=e=>{e.stopPropagation();box.style.display='none';box.innerHTML='';res(o.id)};box.appendChild(b)})})}
 

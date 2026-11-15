@@ -5,6 +5,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Cormorant+Garamond:ital,wght@1,500&family=Special+Elite&display=swap">
 <style>
+html,body{height:100%;margin:0;background:#04050a;color:#f1ebde;overflow:hidden;font-family:"Special Elite","Courier New",monospace}
+#stage{position:relative;width:100%;height:100%;overflow:hidden;background:#04050a}
+#dlg{position:absolute;left:0;right:0;bottom:0;z-index:8;min-height:150px;padding:34px 5vw 22px;background:linear-gradient(to top,rgba(3,4,9,.96),rgba(3,4,9,0));opacity:0;pointer-events:none}
+#poster{position:absolute;inset:0;z-index:14;background:#000;opacity:0;pointer-events:none;overflow:hidden}
+#poster.on{opacity:1;pointer-events:auto}
+#hud{position:absolute;z-index:12;top:14px;right:16px}
+button{font:inherit;color:inherit;cursor:pointer}
+</style>
+<style>
 :root{
   /* Layout: full-bleed 16:9 cinematic stage; typewriter dialogue box docked at the bottom (as in the reference);
      memorial plaques sit above it, standing on a horizon line; finale is a fade-through-black poster. */
